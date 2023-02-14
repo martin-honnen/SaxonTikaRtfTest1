@@ -40,7 +40,7 @@ public class Main {
             @Override
             public XdmValue call(XdmValue[] xdmValues) throws SaxonApiException {
                 try {
-                    return parseRtfToHTML(xdmValues[0].itemAt(0).getStringValue(), processor);
+                    return parseRtfToHTML2(xdmValues[0].itemAt(0).getStringValue(), processor);
                 } catch (IOException | URISyntaxException e) {
                     throw new SaxonApiException(e);
                 } catch (SAXException e) {
@@ -71,6 +71,24 @@ public class Main {
         try (InputStream stream = new ByteArrayInputStream(rtf.getBytes("utf8"))) {
             parser.parse(stream, handler, metadata);
             return docBuilder.build(new StreamSource(new StringReader(handler.toString())));
+        } catch (SaxonApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static XdmNode parseRtfToHTML2(String rtf, Processor processor) throws IOException, SAXException, TikaException, URISyntaxException, SaxonApiException {
+        DocumentBuilder docBuilder = processor.newDocumentBuilder();
+        //docBuilder.setBaseURI(new URI("urn:from-string"));
+
+        //ContentHandler handler = new ToXMLContentHandler();
+
+        BuildingContentHandler handler = docBuilder.newBuildingContentHandler();
+
+        AutoDetectParser parser = new AutoDetectParser();
+        Metadata metadata = new Metadata();
+        try (InputStream stream = new ByteArrayInputStream(rtf.getBytes("utf8"))) {
+            parser.parse(stream, handler, metadata);
+            return handler.getDocumentNode();//docBuilder.build(new StreamSource(new StringReader(handler.toString())));
         } catch (SaxonApiException e) {
             throw new RuntimeException(e);
         }
