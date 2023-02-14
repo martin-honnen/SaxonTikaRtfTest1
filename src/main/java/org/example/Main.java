@@ -55,9 +55,10 @@ public class Main {
 
         Xslt30Transformer xslt30Transformer = xsltCompiler.compile(new StreamSource(new File("sheet1.xsl"))).load30();
 
-        XdmValue result = xslt30Transformer.applyTemplates(new StreamSource(new File("sample1.xml")));
+        //XdmValue result = xslt30Transformer.applyTemplates(new StreamSource(new File("sample2.xml")));
 
-        System.out.println(result);
+        //System.out.println(result);
+        xslt30Transformer.applyTemplates(new StreamSource(new File("sample2.xml")), xslt30Transformer.newSerializer(System.out));
     }
 
     public static XdmNode parseRtfToHTML(String rtf, Processor processor) throws IOException, SAXException, TikaException, URISyntaxException {
